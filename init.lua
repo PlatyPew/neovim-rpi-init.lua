@@ -1,37 +1,44 @@
-vim.o.cursorline = true
-vim.o.encoding = "utf-8"
-vim.o.expandtab = true
-vim.o.list = true
-vim.o.listchars = "tab:»·,trail:·,nbsp:·"
-vim.o.mouse = "nvi"
-vim.o.number = true
-vim.o.relativenumber = true
-vim.o.shiftwidth = 4
-vim.o.showmode = false
-vim.o.softtabstop = 4
-vim.o.splitbelow = true
-vim.o.splitright = true
-vim.o.tabstop = 4
-vim.o.updatetime = 50
-vim.o.whichwrap = "b,s,<,>,h,l"
-vim.o.wrap = true
-vim.o.cmdheight = 0
-vim.o.showcmdloc = "statusline"
+local glo = vim.g
+glo.mapleader = " "
+glo.maplocalleader = "\\"
 
-vim.keymap.set({ "n", "x" }, ";", ":")
-vim.keymap.set("n", "n", "nzzzv")
-vim.keymap.set("n", "N", "Nzzzv")
-vim.keymap.set("n", "<C-d>", "<C-d>zz")
-vim.keymap.set("n", "<C-u>", "<C-u>zz")
-vim.keymap.set("x", "p", "pgvy")
-vim.keymap.set("i", ",", ",<C-g>u")
-vim.keymap.set("i", ".", ".<C-g>u")
-vim.keymap.set({ "n", "x" }, ",y", '"+y', { desc = "Yank To Clipboard" })
-vim.keymap.set({ "n", "x" }, ",Y", '"+y$', { desc = "Yank Line To Clipboard" })
+local opt = vim.o
+opt.cursorline = true
+opt.encoding = "utf-8"
+opt.expandtab = true
+opt.list = true
+opt.listchars = "tab:»·,trail:·,nbsp:·"
+opt.mouse = "nvi"
+opt.number = true
+opt.relativenumber = true
+opt.shiftwidth = 4
+opt.showmode = false
+opt.softtabstop = 4
+opt.splitbelow = true
+opt.splitright = true
+opt.tabstop = 4
+opt.updatetime = 50
+opt.whichwrap = "b,s,<,>,h,l"
+opt.wrap = true
+opt.cmdheight = 0
+opt.showcmdloc = "statusline"
 
-vim.keymap.set("n", "i", function() return #vim.fn.getline(".") == 0 and [["_cc]] or "i" end, { expr = true })
-vim.keymap.set("i", "<Tab>", function() return vim.fn.pumvisible() == 1 and "<C-n>" or "<Tab>" end, { expr = true, noremap = true })
-vim.keymap.set("i", "<S-Tab>", function() return vim.fn.pumvisible() == 1 and "<C-p>" or "<S-Tab>" end, { expr = true, noremap = true })
+local remap = vim.keymap.set
+remap({ "n", "x" }, ";", ":")
+remap("n", "n", "nzzzv")
+remap("n", "N", "Nzzzv")
+remap("n", "<C-d>", "<C-d>zz")
+remap("n", "<C-u>", "<C-u>zz")
+remap("x", "p", "pgvy")
+remap("i", ",", ",<C-g>u")
+remap("i", ".", ".<C-g>u")
+remap({ "n", "x" }, "<Leader>y", '"+y')
+remap({ "n", "x" }, "<Leader>Y", '"+y$')
+remap("t", "<C-Esc>", "<C-\\><C-n>")
+
+remap("n", "i", function() return #vim.fn.getline(".") == 0 and [["_cc]] or "i" end, { expr = true })
+remap("i", "<Tab>", function() return vim.fn.pumvisible() == 1 and "<C-n>" or "<Tab>" end, { expr = true, noremap = true })
+remap("i", "<S-Tab>", function() return vim.fn.pumvisible() == 1 and "<C-p>" or "<S-Tab>" end, { expr = true, noremap = true })
 
 vim.api.nvim_create_user_command("W", "write !sudo tee %", {})
 
@@ -58,13 +65,23 @@ end)
 
 now(function() require("mini.basics").setup({ mappings = { windows = true } }) end)
 
+now(function()
+    require('mini.icons').setup({
+        use_file_extension = function(ext, _)
+            local suf3, suf4 = ext:sub(-3), ext:sub(-4)
+            return suf3 ~= 'scm' and suf3 ~= 'txt' and suf3 ~= 'yml' and suf4 ~= 'json' and suf4 ~= 'yaml'
+        end,
+    })
+    MiniIcons.mock_nvim_web_devicons()
+    later(MiniIcons.tweak_lsp_kind)
+end)
+
 later(function() require("mini.align").setup() end)
 later(function() require("mini.bracketed").setup() end)
 later(function() require("mini.bracketed").setup() end)
 later(function() require("mini.cursorword").setup() end)
 later(function() require("mini.diff").setup() end)
 later(function() require('mini.extra').setup() end)
-later(function() require('mini.git').setup() end)
 later(function() require('mini.hipatterns').setup() end)
 later(function() require('mini.splitjoin').setup() end)
 later(function() require('mini.trailspace').setup() end)
@@ -108,6 +125,8 @@ later(function()
     require('mini.files').setup()
     vim.keymap.set("n", "<C-o>", function() MiniFiles.open() end)
 end)
+
+later(function() require('mini.git').setup() end)
 
 later(function() require('mini.pairs').setup({ modes = { insert = true, command = true, terminal = true } }) end)
 later(function() require('mini.surround').setup({ search_method = 'cover_or_next' }) end)
@@ -158,10 +177,29 @@ now_if_args(function()
     })
 end)
 
-add({
-    source = "folke/snacks.nvim",
-})
+now(function()
+    add({ source = "folke/snacks.nvim" })
 
-require("snacks").setup({
-    bigfile = { enabled = true },
-})
+    require("snacks").setup({
+        bigfile = { enabled = true },
+        bufdelete = { enabled = true },
+        dashboard = { enabled = true },
+        git = { enabled = true },
+        indent = { enabled = true },
+        input = { enabled = true },
+        notifier = { enabled = true },
+        notify = { enabled = true },
+        picker = { enabled = true },
+        quickfile = { enabled = true },
+        terminal = { enabled = true },
+    })
+
+    remap({ "n", "x" }, "<Leader>bq", function() Snacks.bufdelete() end)
+    remap({ "n", "x" }, "<Leader>bQ", function() Snacks.bufdelete.other() end)
+    remap({ "n", "x" }, "<Leader>gb", function() Snacks.git.blame_line() end)
+
+    remap({ "n", "x" }, "<C-p>", function() Snacks.picker.files() end)
+    remap({ "n", "x" }, "<C-g>", function() Snacks.picker.grep() end)
+
+    remap({ "n", "x" }, "<Leader>t", function() Snacks.terminal.toggle() end)
+end)
