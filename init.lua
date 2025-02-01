@@ -135,11 +135,7 @@ later(function() require("mini.move").setup({ mappings = { left = "H", down = "J
 now_if_args(function()
     add({
         source = "supermaven-inc/supermaven-nvim",
-        hooks = {
-            post_checkout = function()
-                require("supermaven-nvim.api").start()
-            end,
-        },
+        hooks = { post_checkout = function() require("supermaven-nvim.api").start() end },
     })
 
     require("supermaven-nvim").setup({
