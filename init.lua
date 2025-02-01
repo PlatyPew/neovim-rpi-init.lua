@@ -54,6 +54,7 @@ local add, now, later = MiniDeps.add, MiniDeps.now, MiniDeps.later
 local now_if_args = vim.fn.argc(-1) > 0 and now or later
 
 now(function() require('mini.sessions').setup() end)
+now(function() require('mini.starter').setup() end)
 now(function() require('mini.statusline').setup() end)
 now(function() require('mini.tabline').setup() end)
 
@@ -82,6 +83,7 @@ later(function() require("mini.bracketed").setup() end)
 later(function() require("mini.cursorword").setup() end)
 later(function() require("mini.diff").setup() end)
 later(function() require('mini.extra').setup() end)
+later(function() require('mini.git').setup() end)
 later(function() require('mini.hipatterns').setup() end)
 later(function() require('mini.splitjoin').setup() end)
 later(function() require('mini.trailspace').setup() end)
@@ -123,13 +125,12 @@ end)
 
 later(function()
     require('mini.files').setup()
-    vim.keymap.set("n", "<C-o>", function() MiniFiles.open() end)
+    remap("n", "<C-o>", function() MiniFiles.open() end)
 end)
 
-later(function() require('mini.git').setup() end)
-
-later(function() require('mini.pairs').setup({ modes = { insert = true, command = true, terminal = true } }) end)
+later(function() require('mini.jump').setup({ mappings = { repeat_jump = "" }, delay = { highlight = 10000000 }}) end)
 later(function() require('mini.surround').setup({ search_method = 'cover_or_next' }) end)
+later(function() require('mini.pairs').setup({ modes = { insert = true, command = true, terminal = true } }) end)
 later(function() require("mini.move").setup({ mappings = { left = "H", down = "J", up = "K", right = "L" } }) end)
 
 now_if_args(function()
@@ -152,7 +153,7 @@ later(function()
 
     require("leap").setup({ equivalence_classes = { " \t\r\n" } })
     require("leap.user").set_repeat_keys("<enter>", "<s-enter>")
-    vim.keymap.set("n", "<CR>", function()
+    remap({ "n", "x" }, "<CR>", function()
         require("leap").leap({ target_windows = require("leap.user").get_focusable_windows() })
     end)
 end)
@@ -171,6 +172,10 @@ now_if_args(function()
         textobjects = { enable = false },
         indent = { enable = true },
     })
+end)
+
+later(function()
+    add({ source = "mg979/vim-visual-multi" })
 end)
 
 now(function()
