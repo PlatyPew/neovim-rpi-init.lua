@@ -54,7 +54,6 @@ local add, now, later = MiniDeps.add, MiniDeps.now, MiniDeps.later
 local now_if_args = vim.fn.argc(-1) > 0 and now or later
 
 now(function() require('mini.sessions').setup() end)
-now(function() require('mini.starter').setup() end)
 now(function() require('mini.statusline').setup() end)
 now(function() require('mini.tabline').setup() end)
 
