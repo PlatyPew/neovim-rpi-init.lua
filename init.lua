@@ -206,6 +206,24 @@ now(function()
         picker = { enabled = true },
         quickfile = { enabled = true },
         terminal = { enabled = true },
+
+        dashboard = {
+            enabled = true,
+            preset = {
+                header = [[
+  ____             _    _               
+ / ___| _   _  ___| | _| | ___  ___ ___ 
+ \___ \| | | |/ __| |/ / |/ _ \/ __/ __|
+  ___) | |_| | (__|   <| |  __/\__ \__ \
+ |____/ \__,_|\___|_|\_\_|\___||___/___/]],
+            },
+            sections = {
+                { section = "header" },
+                { icon = " ", title = "Keymaps", section = "keys", indent = 2, padding = 1 },
+                { icon = " ", title = "Recent Files", section = "recent_files", indent = 2, padding = 1 },
+                { icon = " ", title = "Projects", section = "projects", indent = 2, padding = 1 },
+            }
+        },
     })
 
     remap({ "n", "x" }, "<Leader>bq", function() Snacks.bufdelete() end)
