@@ -1,47 +1,3 @@
-local glo = vim.g
-glo.mapleader = " "
-glo.maplocalleader = "\\"
-
-local opt = vim.o
-opt.cursorline = true
-opt.encoding = "utf-8"
-opt.expandtab = true
-opt.list = true
-opt.listchars = "tab:»·,trail:·,nbsp:·"
-opt.mouse = "nvi"
-opt.number = true
-opt.relativenumber = true
-opt.shiftwidth = 4
-opt.showmode = false
-opt.softtabstop = 4
-opt.splitbelow = true
-opt.splitright = true
-opt.tabstop = 4
-opt.updatetime = 50
-opt.whichwrap = "b,s,<,>,h,l"
-opt.wrap = true
-opt.cmdheight = 0
-opt.showcmdloc = "statusline"
-
-local remap = vim.keymap.set
-remap({ "n", "x" }, ";", ":")
-remap("n", "n", "nzzzv")
-remap("n", "N", "Nzzzv")
-remap("n", "<C-d>", "<C-d>zz")
-remap("n", "<C-u>", "<C-u>zz")
-remap("x", "p", "pgvy")
-remap("i", ",", ",<C-g>u")
-remap("i", ".", ".<C-g>u")
-remap({ "n", "x" }, "<Leader>y", '"+y')
-remap({ "n", "x" }, "<Leader>Y", '"+y$')
-remap("t", "<C-Esc>", "<C-\\><C-n>")
-
-remap("n", "i", function() return #vim.fn.getline(".") == 0 and [["_cc]] or "i" end, { expr = true })
-remap("i", "<Tab>", function() return vim.fn.pumvisible() == 1 and "<C-n>" or "<Tab>" end, { expr = true, noremap = true })
-remap("i", "<S-Tab>", function() return vim.fn.pumvisible() == 1 and "<C-p>" or "<S-Tab>" end, { expr = true, noremap = true })
-
-vim.api.nvim_create_user_command("W", "write !sudo tee %", {})
-
 local mini_path = vim.fn.stdpath("data") .. "/site" .. "/pack/deps/start/mini.nvim"
 if not vim.loop.fs_stat(mini_path) then
     vim.cmd('echo "Installing `mini.nvim`" | redraw')
@@ -52,6 +8,55 @@ end
 require("mini.deps").setup()
 local add, now, later = MiniDeps.add, MiniDeps.now, MiniDeps.later
 local now_if_args = vim.fn.argc(-1) > 0 and now or later
+
+local opt = vim.o
+local glo = vim.g
+local remap = vim.keymap.set
+
+now(function()
+    glo.mapleader = " "
+    glo.maplocalleader = "\\"
+
+    opt.cursorline = true
+    opt.encoding = "utf-8"
+    opt.expandtab = true
+    opt.list = true
+    opt.listchars = "tab:»·,trail:·,nbsp:·"
+    opt.mouse = "nvi"
+    opt.number = true
+    opt.relativenumber = true
+    opt.shiftwidth = 4
+    opt.showmode = false
+    opt.softtabstop = 4
+    opt.splitbelow = true
+    opt.splitright = true
+    opt.tabstop = 4
+    opt.updatetime = 50
+    opt.whichwrap = "b,s,<,>,h,l"
+    opt.wrap = true
+    opt.cmdheight = 0
+    opt.showcmdloc = "statusline"
+end)
+
+later(function()
+    remap({ "n", "x" }, ";", ":")
+    remap("n", "n", "nzzzv")
+    remap("n", "N", "Nzzzv")
+    remap("n", "<C-d>", "<C-d>zz")
+    remap("n", "<C-u>", "<C-u>zz")
+    remap("x", "p", "pgvy")
+    remap("i", ",", ",<C-g>u")
+    remap("i", ".", ".<C-g>u")
+    remap({ "n", "x" }, "<Leader>y", '"+y')
+    remap({ "n", "x" }, "<Leader>Y", '"+y$')
+    remap("t", "<C-Esc>", "<C-\\><C-n>")
+
+    remap("n", "i", function() return #vim.fn.getline(".") == 0 and [["_cc]] or "i" end, { expr = true })
+    remap("i", "<Tab>", function() return vim.fn.pumvisible() == 1 and "<C-n>" or "<Tab>" end, { expr = true, noremap = true })
+    remap("i", "<S-Tab>", function() return vim.fn.pumvisible() == 1 and "<C-p>" or "<S-Tab>" end, { expr = true, noremap = true })
+
+    vim.api.nvim_create_user_command("W", "write !sudo tee %", {})
+end)
 
 now(function() require('mini.sessions').setup() end)
 now(function() require('mini.statusline').setup() end)
@@ -80,7 +85,6 @@ later(function() require("mini.align").setup() end)
 later(function() require("mini.bracketed").setup() end)
 later(function() require("mini.bracketed").setup() end)
 later(function() require("mini.cursorword").setup() end)
-later(function() require("mini.diff").setup() end)
 later(function() require('mini.extra').setup() end)
 later(function() require('mini.hipatterns').setup() end)
 later(function() require('mini.splitjoin').setup() end)
@@ -122,6 +126,21 @@ later(function()
 end)
 
 later(function()
+    require("mini.diff").setup({
+        mappings = {
+            goto_first = '[G',
+            goto_prev = '[g',
+            goto_next = ']g',
+            goto_last = ']G',
+        },
+        view = {
+            style = "sign",
+            signs = { add = "█", change = "▒", delete = "" },
+        },
+    })
+end)
+
+later(function()
     require('mini.files').setup()
     remap("n", "<C-o>", function() MiniFiles.open() end)
 end)
@@ -139,7 +158,6 @@ later(function()
     remap("n", "<Leader>gl", "<Cmd>" .. git_log_cmd .. "<CR>")
     remap("n", "<Leader>gL", "<Cmd>" .. git_log_cmd .. " --follow -- %<CR>")
     remap("n", "<Leader>go", function() MiniDiff.toggle_overlay() end)
-    remap({ "n", "x" }, "<Leader>gs", function() MiniDiff.show_at_cursor() end)
 end)
 
 later(function() require('mini.jump').setup({ mappings = { repeat_jump = "" }, delay = { highlight = 10000000 }}) end)
@@ -232,6 +250,7 @@ now(function()
 
     remap({ "n", "x" }, "<C-p>", function() Snacks.picker.files() end)
     remap({ "n", "x" }, "<C-g>", function() Snacks.picker.grep() end)
+    remap({ "n", "x" }, "<Leader>u", function() Snacks.picker.undo() end)
 
     remap({ "n", "x" }, "<Leader>t", function() Snacks.terminal.toggle() end)
 end)
