@@ -149,8 +149,8 @@ later(function()
     require('mini.git').setup()
 
     local git_log_cmd = [[Git log --pretty=format:\%h\ \%as\ │\ \%s --topo-order]]
-    remap("n", "<Leader>ga", "<Cmd>Git add -A<CR>")
-    remap("n", "<Leader>gA", "<Cmd>Git add -- %<CR>")
+    remap("n", "<Leader>gS", "<Cmd>Git add -- %<CR>")
+    remap("n", "<Leader>gR", "<Cmd>Git reset -- %<CR>")
     remap("n", "<Leader>gc", "<Cmd>Git commit<CR>")
     remap("n", "<Leader>gC", "<Cmd>Git commit --amend<CR>")
     remap("n", "<Leader>gd", "<Cmd>Git diff<CR>")
