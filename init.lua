@@ -9,6 +9,8 @@ require("mini.deps").setup()
 local add, now, later = MiniDeps.add, MiniDeps.now, MiniDeps.later
 local now_if_args = vim.fn.argc(-1) > 0 and now or later
 
+local palette = { base00 = "#1e1e2e", base01 = "#181825", base02 = "#313244", base03 = "#45475a", base04 = "#585b70", base05 = "#cdd6f4", base06 = "#f5e0dc", base07 = "#b4befe", base08 = "#f38ba8", base09 = "#fab387", base0A = "#f9e2af", base0B = "#a6e3a1", base0C = "#94e2d5", base0D = "#89b4fa", base0E = "#cba6f7", base0F = "#f2cdcd"}
+
 local opt = vim.o
 local glo = vim.g
 local remap = vim.keymap.set
@@ -64,7 +66,7 @@ now(function() require('mini.tabline').setup() end)
 
 now(function()
     require("mini.base16").setup({
-        palette = { base00 = "#1e1e2e", base01 = "#181825", base02 = "#313244", base03 = "#45475a", base04 = "#585b70", base05 = "#cdd6f4", base06 = "#f5e0dc", base07 = "#b4befe", base08 = "#f38ba8", base09 = "#fab387", base0A = "#f9e2af", base0B = "#a6e3a1", base0C = "#94e2d5", base0D = "#89b4fa", base0E = "#cba6f7", base0F = "#f2cdcd"},
+        palette = palette,
     })
 end)
 
@@ -160,7 +162,6 @@ later(function()
     remap("n", "<Leader>go", function() MiniDiff.toggle_overlay() end)
 end)
 
-later(function() require('mini.jump').setup({ mappings = { repeat_jump = "" }, delay = { highlight = 10000000 }}) end)
 later(function() require('mini.surround').setup({ search_method = 'cover_or_next' }) end)
 later(function() require('mini.pairs').setup({ modes = { insert = true, command = true, terminal = true } }) end)
 later(function() require("mini.move").setup({ mappings = { left = "H", down = "J", up = "K", right = "L" } }) end)
@@ -178,16 +179,16 @@ now_if_args(function()
 end)
 
 later(function()
-    add({
-        source = "ggandor/leap.nvim",
-        depends = { "tpope/vim-repeat" },
-    })
+    add({ source = "folke/flash.nvim" })
 
-    require("leap").setup({ equivalence_classes = { " \t\r\n" } })
-    require("leap.user").set_repeat_keys("<enter>", "<s-enter>")
-    remap({ "n", "x" }, "<CR>", function()
-        require("leap").leap({ target_windows = require("leap.user").get_focusable_windows() })
-    end)
+    local hl = vim.api.nvim_set_hl
+    hl(0, "FlashBackdrop", { fg = palette.base04 })
+    hl(0, "FlashLabel", { fg = palette.base08, bg = palette.base00, bold = true })
+    hl(0, "FlashMatch", { fg = palette.base07, bg = palette.base00 })
+    hl(0, "FlashCurrent", { fg = palette.base09, bg = palette.base00 })
+    hl(0, "FlashPrompt", { link = "NormalFloat" })
+
+    remap({ "n", "x" }, "<CR>", function() require("flash").jump() end)
 end)
 
 now_if_args(function()
@@ -248,7 +249,7 @@ now(function()
     remap({ "n", "x" }, "<Leader>bQ", function() Snacks.bufdelete.other() end)
     remap({ "n", "x" }, "<Leader>gb", function() Snacks.git.blame_line() end)
 
-    remap({ "n", "x" }, "<C-p>", function() Snacks.picker.files() end)
+    remap({ "n", "x" }, "<C-p>", function() Snacks.picker.smart() end)
     remap({ "n", "x" }, "<C-g>", function() Snacks.picker.grep() end)
     remap({ "n", "x" }, "<Leader>u", function() Snacks.picker.undo() end)
 
