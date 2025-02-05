@@ -208,7 +208,36 @@ now_if_args(function()
 end)
 
 later(function()
-    add({ source = "mg979/vim-visual-multi" })
+    add({ source = "jake-stewart/multicursor.nvim" })
+
+    local mc = require("multicursor-nvim")
+    mc.setup()
+
+    remap({"n", "v"}, "<A-up>", function() mc.lineAddCursor(-1) end)
+    remap({"n", "v"}, "<A-down>", function() mc.lineAddCursor(1) end)
+    remap({"n", "v"}, "<A-S-up>", function() mc.lineSkipCursor(-1) end)
+    remap({"n", "v"}, "<A-S-down>", function() mc.lineSkipCursor(1) end)
+    remap({"n", "v"}, "<A-left>", mc.nextCursor)
+    remap({"n", "v"}, "<A-right>", mc.prevCursor)
+
+    remap({"n", "v"}, "<C-n>", function() mc.matchAddCursor(1) end)
+    remap({"n", "v"}, "<C-q>", function() mc.matchSkipCursor(1) end)
+
+    remap({"n", "v"}, "<leader>x", mc.deleteCursor)
+    remap("n", "<c-leftmouse>", mc.handleMouse)
+
+    remap("n", "<esc>", function()
+        if not mc.cursorsEnabled() then
+            mc.enableCursors()
+        elseif mc.hasCursors() then
+            mc.clearCursors()
+        else
+        end
+    end)
+
+    remap("v", "I", mc.insertVisual)
+    remap("v", "A", mc.appendVisual)
+    remap("v", "M", mc.matchCursors)
 end)
 
 now(function()
