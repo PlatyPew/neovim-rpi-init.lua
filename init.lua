@@ -235,8 +235,6 @@ later(function()
         end
     end)
 
-    remap("v", "I", mc.insertVisual)
-    remap("v", "A", mc.appendVisual)
     remap("v", "M", mc.matchCursors)
 end)
 
