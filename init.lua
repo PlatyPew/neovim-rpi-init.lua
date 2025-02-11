@@ -166,18 +166,6 @@ later(function() require('mini.surround').setup({ search_method = 'cover_or_next
 later(function() require('mini.pairs').setup({ modes = { insert = true, command = true, terminal = true } }) end)
 later(function() require("mini.move").setup({ mappings = { left = "H", down = "J", up = "K", right = "L" } }) end)
 
-now_if_args(function()
-    add({
-        source = "supermaven-inc/supermaven-nvim",
-        hooks = { post_checkout = function() require("supermaven-nvim.api").start() end },
-    })
-
-    require("supermaven-nvim").setup({
-        log_level = "off",
-        keymaps = { accept_suggestion = "<M-CR>", clear_suggestion = "<M-]>", accept_word = "<M-w>" },
-    })
-end)
-
 later(function()
     add({ source = "folke/flash.nvim" })
 
