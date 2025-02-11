@@ -73,6 +73,11 @@ end)
 now(function() require("mini.basics").setup({ mappings = { windows = true } }) end)
 
 now(function()
+    require('mini.files').setup()
+    remap("n", "<C-o>", function() MiniFiles.open() end)
+end)
+
+now(function()
     require('mini.icons').setup({
         use_file_extension = function(ext, _)
             local suf3, suf4 = ext:sub(-3), ext:sub(-4)
@@ -140,11 +145,6 @@ later(function()
             signs = { add = "█", change = "▒", delete = "" },
         },
     })
-end)
-
-later(function()
-    require('mini.files').setup()
-    remap("n", "<C-o>", function() MiniFiles.open() end)
 end)
 
 later(function()
