@@ -38,6 +38,8 @@ now(function()
     opt.wrap = true
     opt.cmdheight = 0
     opt.showcmdloc = "statusline"
+    opt.undodir = vim.fn.stdpath("cache") .. "/undotree"
+    opt.undofile = true
 end)
 
 later(function()
