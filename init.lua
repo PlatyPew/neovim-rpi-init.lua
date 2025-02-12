@@ -232,14 +232,6 @@ now(function()
     require("snacks").setup({
         bigfile = { enabled = true },
         bufdelete = { enabled = true },
-        git = { enabled = true },
-        indent = { enabled = true },
-        input = { enabled = true },
-        notifier = { enabled = true },
-        picker = { enabled = true },
-        quickfile = { enabled = true },
-        terminal = { enabled = true },
-
         dashboard = {
             enabled = true,
             preset = {
@@ -257,14 +249,21 @@ now(function()
                 { icon = " ", title = "Projects", section = "projects", indent = 2, padding = 1 },
             }
         },
+        git = { enabled = true },
+        indent = { enabled = true },
+        input = { enabled = true },
+        notifier = { enabled = true },
+        picker = { enabled = true },
+        quickfile = { enabled = true },
+        terminal = { enabled = true },
     })
 
     remap({ "n", "x" }, "<Leader>bq", function() Snacks.bufdelete() end)
     remap({ "n", "x" }, "<Leader>bQ", function() Snacks.bufdelete.other() end)
     remap({ "n", "x" }, "<Leader>gb", function() Snacks.git.blame_line() end)
 
-    remap({ "n", "x" }, "<C-p>", function() Snacks.picker.smart() end)
-    remap({ "n", "x" }, "<C-g>", function() Snacks.picker.grep() end)
+    remap({ "n", "x" }, "<C-p>", function() Snacks.picker.smart({ hidden = true }) end)
+    remap({ "n", "x" }, "<C-g>", function() Snacks.picker.grep({ hidden = true }) end)
     remap({ "n", "x" }, "<Leader>u", function() Snacks.picker.undo() end)
 
     remap({ "n", "x" }, "<Leader>t", function() Snacks.terminal.toggle() end)
